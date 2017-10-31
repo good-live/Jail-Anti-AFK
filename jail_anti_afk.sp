@@ -5,6 +5,10 @@
 #include <multicolors>
 #include <cstrike>
 
+#undef REQUIRE_PLUGIN
+#include <myjailbreak>
+#define REQUIRE_PLUGIN
+
 #pragma newdecls required
 
 public Plugin myinfo = 
@@ -18,9 +22,11 @@ public Plugin myinfo =
 
 ConVar g_cTimeCheck;
 float g_fPlayerSpawnPositon[MAXPLAYERS + 1][3];
+bool g_bMyJB = false;
 
 public void OnPluginStart()
 {
+	g_bMyJB = LibraryExists("myjailbreak");
 	g_cTimeCheck = CreateConVar("anti_afk_time", "60", "The time in secounds after that all afk players get moved to spec");
 	
 	HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy);
@@ -42,6 +48,8 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 
 public Action Timer_CheckAfk(Handle timer)
 {
+	if(g_bMyJB && MyJailbreak_IsEventDayRunning())
+		return Plugin_Continue;
 	float clientPosition[3];
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -55,5 +63,22 @@ public Action Timer_CheckAfk(Handle timer)
 			CPrintToChatAll("[{green}PLG-JAIL{default}]{purple}%N{default} got moved to spectator, because he was AFK", i);
 			ChangeClientTeam(i, CS_TEAM_SPECTATOR);
 		}
+	}
+	return Plugin_Continue;
+}
+ 
+public void OnLibraryRemoved(const char[] name)
+{
+	if (StrEqual(name, "myjailbreak"))
+	{
+		g_bMyJB = false;
+	}
+}
+ 
+public void OnLibraryAdded(const char[] name)
+{
+	if (StrEqual(name, "myjailbreak"))
+	{
+		g_bMyJB = true;
 	}
 }
