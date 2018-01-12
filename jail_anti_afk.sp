@@ -2,12 +2,13 @@
 
 #include <sourcemod>
 #include <sdktools>
-#include <multicolors>
-#include <cstrike>
 
 #undef REQUIRE_PLUGIN
 #include <myjailbreak>
 #define REQUIRE_PLUGIN
+
+#include <multicolors>
+#include <cstrike>
 
 #pragma newdecls required
 
@@ -60,7 +61,7 @@ public Action Timer_CheckAfk(Handle timer)
 		
 		if(clientPosition[0] == g_fPlayerSpawnPositon[i][0] && clientPosition[1] == g_fPlayerSpawnPositon[i][1] && clientPosition[2] == g_fPlayerSpawnPositon[i][2])
 		{
-			CPrintToChatAll("[{green}PLG-JAIL{default}]{purple}%N{default} got moved to spectator, because he was AFK", i);
+			CPrintToChatAll("[{green}PLG-JAIL{default}]{purple}%N{default} wurde zu den Zuschauer gemoved, weil er AFK war", i);
 			ChangeClientTeam(i, CS_TEAM_SPECTATOR);
 		}
 	}
